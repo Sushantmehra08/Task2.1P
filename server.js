@@ -1,5 +1,6 @@
 const express = require('express');
 const mailgun = require('mailgun-js');
+const path = require('path'); // Required to correctly serve the HTML file
 const app = express();
 const port = 3000;
 
@@ -16,13 +17,19 @@ const mg = mailgun({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Serve static files from the 'public' directory
 app.use(express.static('public'));
+
+// Define a route for the root URL ('/')
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 app.post('/subscribe', (req, res) => {
     const { email } = req.body;
 
     const data = {
-        from: 'DEV@Deakin <your-prince.sushant08@gmail.com>',
+        from: 'DEV@Deakin <sushant.mehra08@gmail.com>',
         to: email,
         subject: 'Welcome to DEV@Deakin',
         text: 'Thank you for subscribing to DEV@Deakin!',
